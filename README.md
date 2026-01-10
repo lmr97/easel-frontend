@@ -30,7 +30,7 @@ That's it!
 
 ### Frontend
 
-- **Pure HTML/CSS/Javascript frontend** for simple development and better community involvement
+- **Pure HTML/CSS/TypeScript frontend** for simple development and better community involvement
 
 ### Backend
 
