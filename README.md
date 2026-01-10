@@ -13,6 +13,19 @@ Easel is a forthcoming website that aims to help people to find artists to commi
 - **Open-source code** which makes suggestions easy to submit and more likely to be applied
 - **Free to use, for all features** (no "premium" tier)
 
+## Running locally (preview of site)
+
+This frontend has no dependencies, so, to see how it's looking so far, simply:
+
+1. Clone the repo:
+    ```
+    git clone https://github/lmr97/easel-frontend.git
+    ```
+
+2. Open `index.html` in your browser.
+
+That's it!
+
 ## Code design features
 
 ### Frontend
