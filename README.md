@@ -1,6 +1,10 @@
-# easel
+# Easel 
 
-I'm thinking of making a website that helps people to find artists to commission. It would function like a search engine, directing the user to artist profiles with commission info, types of commissions available, example work, and links to their other websites. This website would not process payments. It would essentially exist to redirect buyers to the websites you choose. Its key features would include:
+<img style="width:100%" alt="Easel logo" src="assets/icons/easel-icon-with-name.png">
+
+***A tag-based search engine for commissionable artists***
+
+Easel is a forthcoming website that aims to help people to find artists to commission. It would function like a search engine, directing the user to artist profiles with commission info, types of commissions available, example work, and links to their other websites. This website would not process payments. It would essentially exist to redirect potential buyers to the websites the artists choose. Its key features would include:
 
 - **Tag-based search** for easy filtering of artists by theme, price, and medium
 - Artist recommendations for similar artists to given profile (not AI-based)
@@ -9,4 +13,17 @@ I'm thinking of making a website that helps people to find artists to commission
 - **Open-source code** which makes suggestions easy to submit and more likely to be applied
 - **Free to use, for all features** (no "premium" tier)
 
-I'm still trying to determine a solid feature set for this website, so I have [a survey]() you can take so I can make sure this is of use to people. 
+## Code design features
+
+### Frontend
+
+- **Pure HTML/CSS/Javascript frontend** for simple development and better community involvement
+
+### Backend
+
+- Go-based server with minimal dependencies for easier development
+
+- Data design leveraged Bluesky's [AT Protocol](https://atproto.com/) for data sovreignty
+
+
+I'm still trying to determine a solid feature set for this website, so I have [a survey](https://docs.google.com/forms/d/1vOBdIho66Au_UDXamQ1IKvogF4wPD2H4UqYUk6YPRDE/edit) you can take so I can make sure this is of use to people. 
