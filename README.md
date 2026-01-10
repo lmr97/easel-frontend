@@ -1,6 +1,6 @@
 # Easel 
 
-<img style="width:100%" alt="Easel logo" src="https://github.com/lmr97/assets/icons/easel-icon-with-name.png">
+![Easel logo](assets/icons/easel-icon-with-name.png | width=100)
 
 ***A tag-based search engine for commissionable artists***
 
