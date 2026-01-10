@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Easel - Find the perfect artist</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Aladin&family=Geist+Mono:wght@100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./styles/colors0.css">
+        <link rel="stylesheet" href="./styles/std.css">
+        <link rel="stylesheet" href="./styles/home.css">
+        <link rel="icon" type="image/svg+xml" href="./assets/icons/easel-maroon.svg">
+    </head>
+    <header>
+        <a id="logo-box" href="/">
+            <img id="site-logo" alt="site logo of an empty easel" src="./assets/icons/easel-cream.svg">
+            <p id="logo-text" class="fancy-header">ease<span id="color-l">l</span></p>
+        </a>
+        <nav id="desktop-nav">
+            <a href="./why-easel">Why Easel?</a>
+            <a href="./features">Features</a>
+            <a href="./another">Another Tab</a>
+            <a href="./one-last">One Last Tab</a>
+        </nav>
+        <div class="header-buttons">
+            <a href="./login">
+                <button class="login">Log in</button>
+            </a>
+            <img id="hamburger" alt="nav icon" src="./assets/icons/hamburger-menu-svgrepo-com.svg">
+        </div>
+    </header>
+    <ul class="mobile-nav">
+        <li><a href="./why-easel">Why Easel?</a></li>
+        <li><a href="./features">Features</a></li>
+        <li><a href="./another">Another Tab</a></li>
+        <li><a href="./one-last">One Last Tab</a></li>
+    </ul>
+    <body>
+        <!-- <div class="example-display fade-in">
+            <div id="example-caption">
+                <p id="example-search">#animal #feathers #fur maned wolf</p>
+                <p id="example-artist">by: tatchit</p>
+            </div>
+        </div>
+        <div class="example-display fade-in">
+            <div id="example-caption">
+                <p id="example-search">#lion #mtg #fantasy guardian</p>
+                <p id="example-artist">by: petermohrbacher</p>
+            </div>
+        </div> -->
+        <!-- <div class="example-display">
+            <div id="example-caption">
+                <p id="example-search">#mech #dragon bionicle</p>
+                <p id="example-artist">by: farain</p>
+            </div>
+        </div> -->
+        
+        <h1 id="main-heading">Find your next great commission!</h1>
+        <form>
+            <div id="search-block">
+                <div class="rainbow-border-mat">
+                    <input id="search-box"  placeholder="#mech #dragon bionicle" type="search">
+                </div>
+                <button id="artist-search-button">Find artists</button>
+            </div>
+            <div id="tag-bin">
+                <div class="tag-bin-label">
+                    <h2>Add some tags here:</h2>
+                    <h3>or type them above, with a #</h3>
+                </div>
+            </div>
+            <div id="tag-cloud">
+                <div class="theme-tag theme-tag-color0">#cyberpunk</div>
+                <div class="theme-tag theme-tag-color1">#elves</div>
+                <div class="theme-tag theme-tag-color2">#woodland</div>
+                <div class="theme-tag theme-tag-color3">#mecha</div>
+                <div class="theme-tag theme-tag-color4">#m/f</div>
+                <div class="theme-tag theme-tag-color0">#cat</div>
+                <div class="theme-tag theme-tag-color1">#anime</div>
+                <div class="theme-tag theme-tag-color2">#artnoveau</div>
+                <div class="theme-tag theme-tag-color3">#f/f</div>
+            </div>
+        </form>
+    </body>
+    <footer>
+        <div class="footer-links">
+            <a href="https://www.instagram.com/easel">
+                <img class="footer-icon" src="./assets/icons/instagram-rainbow.png">
+            </a>
+            <a href="https://bsky.app/easel">
+                <img class="footer-icon" src="./assets/icons/Bluesky_Logo.png">
+            </a>
+            <a href="https://github.com/lmr97/easel">
+                <img class="footer-icon" src="./assets/icons/github-octocat.png">
+            </a>
+        </div>
+        <p class="copyright">&copy;2026 S/M Enterprises</p>
+    </footer>
+    <script type="module" src="./scripts/home.ts"></script>
+</html>

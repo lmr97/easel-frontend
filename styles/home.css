@@ -1,0 +1,207 @@
+/* using this "variable" to animate on smoothly */
+@property --rotation {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0turn;
+}
+
+@property --incoming-img-left-pos {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 100vw;
+}
+
+@property --outgoing-img-left-pos {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 0vw;
+}
+
+/* this exists to temporarily hold a length value
+for the length variables above, so they can be incremented. */
+@property --tmp-len {
+    syntax: "<length>";
+    inherits: false;
+    initial-value: 0vw;
+}
+
+@keyframes rotate-rainbow {
+    0% {
+        --rotation: 0turn;
+    }
+    50% {
+        --rotation: 0.5turn;
+    }
+    100% {
+        --rotation: 1turn;
+    }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+@keyframes slide-in-new-img {
+    from {
+        --tmp-len: var(--outgoing-img-left-pos);
+        --outgoing-img-right-pos: var(--tmp-len);
+        --incoming-img-left-pos:  100vw;
+    }
+    to {
+        --outgoing-img-left-pos: calc(var(--tmp-len) - 100vw);
+        --incoming-img-left-pos:    0vw;
+        
+    }
+}
+
+h1 {
+    text-align: center;
+}
+
+.example-display {
+    display: none;
+    height: 15em;
+    width: 100%;
+    background-size: cover;
+    background-position: top 30% center;
+    background-repeat: no-repeat;
+    justify-content: right;
+    align-items: end;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.fade-in {
+    position: absolute;
+    animation-name: fade-in;
+}
+
+.fade-out {
+    position: absolute;
+    animation-name: fade-out;
+}
+
+
+#example-caption {
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    padding: 3%;
+    background-image: linear-gradient(to bottom, transparent, var(--body-background));
+}
+
+#example-search {
+    font-style: italic;
+}
+
+#example-search, #example-artist {
+    height: fit-content;
+    width: 100%;
+}
+
+#search-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 7%;
+}
+
+#artist-search-button {
+    font-size: larger;
+    font-family: "Nunito Sans", sans-serif;
+    font-weight: 400;
+}
+
+.rainbow-border-mat {
+    background-image: linear-gradient(var(--rotation), 
+        var(--tag-color0) 0%, 
+        var(--tag-color1)  25%, 
+        var(--tag-color2)  50%, 
+        var(--tag-color3)  75%, 
+        var(--tag-color4)  100%
+    );
+    padding: 0.5%;
+    width: 80%;
+    height: 50px;
+    border-radius: 6px;
+    animation-name: rotate-rainbow;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+}
+
+input {
+    border: none;
+    /* needs to be rainbow-border-mat radius - padding size */
+    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    font-size: larger;
+    padding-left: 10px;
+}
+
+
+#tag-cloud, #tag-bin {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+#tag-cloud {
+    margin: 7%;
+}
+
+#tag-bin {
+    margin: 5%;
+    padding: 2%;
+    border: 1px solid grey;
+    border-radius: 15px;
+}
+
+.theme-tag {
+    color: var(--body-text-color);
+    height: fit-content;
+    font-family: "Geist Mono", monospace;
+    font-weight: 400;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--body-text-color);
+    border-radius: 20px;
+    padding: 9px;
+}
+
+/* purple */
+.theme-tag-color0 {
+    background-color: var(--tag-color0);
+    color: var(--body-background);
+}
+
+/* blue */
+.theme-tag-color1 {
+    background-color: var(--tag-color1);
+    color: var(--body-background);
+}
+
+/* green */
+.theme-tag-color2 {
+    background-color: var(--tag-color2);
+}
+
+/* orange/yellow */
+.theme-tag-color3 {
+    background-color: var(--tag-color3);
+}
+
+/* red */
+.theme-tag-color4 {
+    background-color: var(--tag-color4);
+    color: var(--body-background);
+}

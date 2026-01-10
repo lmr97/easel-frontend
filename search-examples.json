@@ -1,0 +1,22 @@
+[
+    {
+        "imagePath": "assets/example-art/kentoku_kanohi_dragon_by_ferain-d7ocdnk.jpg",
+        "searchQuery": "#mech #dragon bionicle",
+        "artist": "ferain"
+    },
+    {
+        "imagePath": "assets/example-art/samyaza__angel_of_pride_by_petemohrbacher-da3mz25.jpg",
+        "searchQuery": "#lion #mtg #fantasy guardian",
+        "artist": "petermohrbacher"
+    },
+    {
+        "imagePath": "assets/example-art/crowned_by_tatchit-d6b7qg0.png",
+        "searchQuery": "#animal #feathers #fur maned wolf",
+        "artist": "tatchit"
+    },
+    {
+        "imagePath": "assets/example-art/Isaak Brodsky - Vladimir Lenin in Smolny.jpg",
+        "searchQuery": "#ussr #socialistrealism #oilpaint lenin",
+        "artist": "isaakbrodsky"
+    }
+]

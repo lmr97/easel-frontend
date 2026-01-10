@@ -1,0 +1,15 @@
+:root {
+    --header-background: #910041;
+    --header-text-color: #ffffde;
+    --body-background: #ffffde;
+    --body-text-color: #111;
+    --button-color: #879dff;
+    --button-text-color: #111;
+    --tag-color0: #910041;
+    --tag-color1: #ffadab;
+    --tag-color2: #ffffde;
+    --tag-color3: #ceffff;
+    --tag-color4: #879dff;
+    --footer-background: #879dff;
+    --footer-text-color: #ffffde;
+}
