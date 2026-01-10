@@ -1,6 +1,6 @@
 # Easel 
 
-![Easel logo](assets/icons/easel-icon-with-name.png | width=100)
+![Easel logo](./assets/icons/easel-icon-with-name.png | width=100)
 
 ***A tag-based search engine for commissionable artists***
 
