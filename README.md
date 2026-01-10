@@ -1,6 +1,6 @@
 # Easel 
 
-![Easel logo](https://github.com/lmr97/assets/icons/easel-icon-with-name.png)
+![Easel logo](https://github.com/lmr97/easel-frontend/blob/main/assets/icons/easel-icon-with-name.png | width=100)
 
 ***A tag-based search engine for commissionable artists***
 
