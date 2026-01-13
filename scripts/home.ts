@@ -117,6 +117,30 @@ function rotateImages() {
     );
 }
 
+function rotatePlaceholder(qlist: QueryExample[]) {
+    let fadeOut = searchBox.animate(
+        [
+            { color: "var(--body-text-color)" },
+            { color: "#fff" }
+        ],
+        animationDur / 2
+    );
+
+    // only switch out text and start fade-in once fade-out
+    // is guaranteed done
+    fadeOut.onfinish = () => {
+        searchBox.placeholder = qlist[visibleDisplay].searchQuery
+        searchBox.animate(
+            [
+                { color: "#fff" },
+                { color: "var(--body-text-color)" }
+            ],
+            animationDur / 2
+        );
+    };
+    
+}
+
 
 function toggleTagBin(this: HTMLDivElement, _: PointerEvent) {
     if (this.parentElement?.id === "tag-cloud") {
@@ -158,7 +182,8 @@ function main() {
         .then((resp: Response) => resp.json())
         .then((qlist: QueryExample[]) => {
             insertExampleDisplays(qlist);
-            window.setInterval(rotateImages, timeVisible)
+            window.setInterval(rotateImages,      timeVisible);
+            window.setInterval(rotatePlaceholder, timeVisible, qlist);
         })
         .catch((err) => console.error(err));
 }

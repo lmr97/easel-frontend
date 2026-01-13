@@ -42,6 +42,11 @@ for the length variables above, so they can be incremented. */
     to   { opacity: 1; }
 }
 
+@keyframes fade-in-text {
+    from { color: #fff; }
+    to   { color: var(--body-text-color); }
+}
+
 @keyframes fade-out {
     from { opacity: 1; }
     to   { opacity: 0; }
