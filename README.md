@@ -1,4 +1,4 @@
-# Easel 
+# Easel
 
 ![Easel logo](https://github.com/lmr97/easel-frontend/blob/main/assets/icons/easel-icon-with-name.png)
 
@@ -18,7 +18,8 @@ Easel is a forthcoming website that aims to help people to find artists to commi
 This frontend has no dependencies, so, to see how it's looking so far, simply:
 
 1. Clone the repo:
-    ```
+
+    ```{bash}
     git clone https://github/lmr97/easel-frontend.git
     ```
 
@@ -38,5 +39,4 @@ That's it!
 
 - Data design leveraged Bluesky's [AT Protocol](https://atproto.com/) for data sovreignty
 
-
-I'm still trying to determine a solid feature set for this website, so I have [a survey](https://docs.google.com/forms/d/1vOBdIho66Au_UDXamQ1IKvogF4wPD2H4UqYUk6YPRDE/edit) you can take so I can make sure this is of use to people. 
+I'm still trying to determine a solid feature set for this website, so I have [a survey](https://docs.google.com/forms/d/1vOBdIho66Au_UDXamQ1IKvogF4wPD2H4UqYUk6YPRDE/edit) you can take so I can make sure this is of use to people.
