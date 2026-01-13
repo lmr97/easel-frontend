@@ -8,7 +8,6 @@ const hamburger   = document.getElementById("hamburger") as HTMLImageElement;
 const mainHeading = document.getElementById("main-heading") as HTMLHeadingElement;
 const mobileMenu  = document.getElementsByClassName("mobile-nav")[0] as HTMLMenuElement;
 const pageHeader  = document.getElementsByTagName("header")[0] as HTMLElement;
-const searchBox   = document.getElementById("search-box") as HTMLInputElement;
 const tagCloud    = document.getElementById("tag-cloud") as HTMLDivElement;
 const themeTagBin = document.getElementById("tag-bin") as HTMLDivElement;
 const themeTags   = document.getElementsByClassName("theme-tag") as HTMLCollectionOf<HTMLDivElement>;
@@ -118,6 +117,14 @@ function rotateImages() {
 }
 
 function rotatePlaceholder(qlist: QueryExample[]) {
+    
+    const searchBox   = document.getElementById("search-box") as HTMLInputElement;
+    
+    // don't animate when user has typed in box
+    if (searchBox.value) {
+        return;
+    }
+
     let fadeOut = searchBox.animate(
         [
             { color: "var(--body-text-color)" },
