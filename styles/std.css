@@ -147,7 +147,7 @@ footer {
 
 /* MISC */
 
-button {
+button, input[type="submit"] {
     color: var(--button-text-color);
     font-weight: 500;
     background-color: var(--button-color);
@@ -159,7 +159,7 @@ button {
     transition-duration: 0.25s;
 }
 
-button:hover {
+button:hover, input[type="submit"]:hover {
     color: var(--body-background);
     background-color: var(--tag-color1);
 }
