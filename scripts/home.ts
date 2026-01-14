@@ -4,13 +4,18 @@ type QueryExample = {
     artist: string
 };
 
+type TagSet = {
+    accessed: Date,
+    tags: Array<string>
+}
+
 const hamburger   = document.getElementById("hamburger") as HTMLImageElement;
 const mainHeading = document.getElementById("main-heading") as HTMLHeadingElement;
 const mobileMenu  = document.getElementsByClassName("mobile-nav")[0] as HTMLMenuElement;
 const pageHeader  = document.getElementsByTagName("header")[0] as HTMLElement;
+const parser      = new DOMParser();
 const tagCloud    = document.getElementById("tag-cloud") as HTMLDivElement;
 const themeTagBin = document.getElementById("tag-bin") as HTMLDivElement;
-const themeTags   = document.getElementsByClassName("theme-tag") as HTMLCollectionOf<HTMLDivElement>;
 
 // this array is in reverse order of the nodes in the document.
 var allDisplays    = new Array<HTMLDivElement>();
@@ -19,6 +24,7 @@ var visibleDisplay = 0;
 // setting this here vs. CSS files so it can be consistently applied
 const animationDur = 1000;
 const timeVisible  = 4000;
+const numTagColors = 5;
 
 
 function hideNode(this: HTMLDivElement, ev: AnimationEvent) {
@@ -39,13 +45,12 @@ function constructClone(idx: number, exampleQuery: QueryExample): HTMLDivElement
     
     const newExampleRaw = 
         `<div class="example-display">
-            <div id="example-caption">
-                <p id="example-search">${exampleQuery.searchQuery}</p>
-                <p id="example-artist">by: ${exampleQuery.artist}</p>
+            <div class="example-caption">
+                <p class="example-search">${exampleQuery.searchQuery}</p>
+                <p class="example-artist">by: ${exampleQuery.artist}</p>
             </div>
         </div>`
 
-    const parser = new DOMParser();
     const parsed = parser.parseFromString(newExampleRaw, "text/html");
 
     let newExample = parsed.body.firstChild as HTMLDivElement;
@@ -145,7 +150,22 @@ function rotatePlaceholder(qlist: QueryExample[]) {
             animationDur / 2
         );
     };
+}
+
+
+function renderTags(tags: string[]) {
     
+    for (const [i, tag] of tags.entries()) {
+
+        const colorNum = i % numTagColors;
+        const doc = parser.parseFromString(
+            `<div class="theme-tag theme-tag-color${colorNum}">#${tag}</div>`, 
+            "text/html"
+        );
+        const tagNode = doc.body.firstChild as HTMLDivElement;
+        tagNode.addEventListener("click", toggleTagBin)
+        tagCloud.append(tagNode)
+    }
 }
 
 
@@ -154,7 +174,7 @@ function toggleTagBin(this: HTMLDivElement, _: PointerEvent) {
         themeTagBin.appendChild(this);
     }
     else if (this.parentElement?.id === "tag-bin") {
-        tagCloud.appendChild(this);
+        tagCloud.prepend(this);
     }
 }
 
@@ -172,11 +192,6 @@ function toggleMenu(this: HTMLImageElement, _ev: PointerEvent) {
 
 
 function main() {
-
-    for (var tag of themeTags) {
-        tag.addEventListener("click", toggleTagBin)
-    }
-
     hamburger.addEventListener("click", toggleMenu)
 
     fetch("./search-examples.json")
@@ -193,6 +208,16 @@ function main() {
             window.setInterval(rotatePlaceholder, timeVisible, qlist);
         })
         .catch((err) => console.error(err));
+
+    fetch("./tags.json")
+        .then((resp: Response) => {
+            if (!resp.ok) { 
+                throw new Error(`HTTP error returned: ${resp.status}`) 
+            } 
+            return resp;
+        })
+        .then((resp: Response) => resp.json())
+        .then((tagSet: TagSet) => renderTags(tagSet.tags))
 }
 
 main()
