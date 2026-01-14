@@ -9,16 +9,18 @@ type TagSet = {
     tags: Array<string>
 }
 
-const hamburger   = document.getElementById("hamburger") as HTMLImageElement;
-const mainHeading = document.getElementById("main-heading") as HTMLHeadingElement;
-const mobileMenu  = document.getElementsByClassName("mobile-nav")[0] as HTMLMenuElement;
-const pageHeader  = document.getElementsByTagName("header")[0] as HTMLElement;
-const parser      = new DOMParser();
-const tagCloud    = document.getElementById("tag-cloud") as HTMLDivElement;
-const themeTagBin = document.getElementById("tag-bin") as HTMLDivElement;
+const hamburger    = document.getElementById("hamburger") as HTMLImageElement;
+const mainHeading  = document.getElementById("main-heading") as HTMLHeadingElement;
+const mobileMenu   = document.getElementsByClassName("mobile-nav")[0] as HTMLMenuElement;
+const pageHeader   = document.getElementsByTagName("header")[0] as HTMLElement;
+const parser       = new DOMParser();
+const searchButton = document.getElementById("artist-search-button") as HTMLButtonElement;
+const tagCloud     = document.getElementById("tag-cloud") as HTMLDivElement;
+const themeTagBin  = document.getElementById("tag-bin") as HTMLDivElement;
 
 // this array is in reverse order of the nodes in the document.
 var allDisplays    = new Array<HTMLDivElement>();
+var selectedTags   = new Array<string>();
 var visibleDisplay = 0;
 
 // setting this here vs. CSS files so it can be consistently applied
@@ -171,9 +173,11 @@ function renderTags(tags: string[]) {
 
 function toggleTagBin(this: HTMLDivElement, _: PointerEvent) {
     if (this.parentElement?.id === "tag-cloud") {
+        selectedTags.push(this.textContent.slice(1))
         themeTagBin.appendChild(this);
     }
     else if (this.parentElement?.id === "tag-bin") {
+        selectedTags.pop();
         tagCloud.prepend(this);
     }
 }
@@ -190,17 +194,50 @@ function toggleMenu(this: HTMLImageElement, _ev: PointerEvent) {
     }
 }
 
+function runSearch(this: HTMLFormElement, submitEvent: SubmitEvent) {
+    submitEvent.preventDefault();
+
+    const formData    = new FormData(this);
+    const searchText  = formData.get("searchText")?.toString()
+    const searchterms = searchText?.split(" ")
+
+    var searchTags    = searchterms
+        ?.filter((w) => w.startsWith("#"))
+        ?.map((t) => t.slice(1))
+    
+    searchTags?.push(...selectedTags);
+
+    const searchWords = searchterms?.filter((w) => !w.startsWith("#")) as string[];
+    
+    const queryTagPortion = searchTags
+        ?.map((t) => "tag="+encodeURIComponent(t))
+        ?.join("&");
+
+    const queryWordPortion = searchWords
+        ?.map((w) => "word="+encodeURIComponent(w))
+        ?.join("&");
+
+    const query = queryTagPortion + "&" + queryWordPortion
+    
+    location.href = "/search?" + query;
+}
+
+
+function handleHTTPErrors(resp: Response): Response {
+    if (!resp.ok) { 
+        throw new Error(
+            `HTTP error returned: ${resp.status}`
+        ) 
+    } 
+    return resp;
+}
+
 
 function main() {
     hamburger.addEventListener("click", toggleMenu)
 
     fetch("./search-examples.json")
-        .then((resp: Response) => {
-            if (!resp.ok) { 
-                throw new Error(`HTTP error returned: ${resp.status}`) 
-            } 
-            return resp;
-        })
+        .then(handleHTTPErrors)
         .then((resp: Response) => resp.json())
         .then((qlist: QueryExample[]) => {
             insertExampleDisplays(qlist);
@@ -210,14 +247,13 @@ function main() {
         .catch((err) => console.error(err));
 
     fetch("./tags.json")
-        .then((resp: Response) => {
-            if (!resp.ok) { 
-                throw new Error(`HTTP error returned: ${resp.status}`) 
-            } 
-            return resp;
-        })
+        .then(handleHTTPErrors)
         .then((resp: Response) => resp.json())
         .then((tagSet: TagSet) => renderTags(tagSet.tags))
+    
+    const form = document.getElementsByName("search")[0] as HTMLFormElement;
+    
+    form.addEventListener("submit", runSearch);
 }
 
 main()
