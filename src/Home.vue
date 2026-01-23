@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onBeforeMount, onMounted, ref } from 'vue'
 import PageHeader from './Header.vue'
 import PageFooter from './Footer.vue'
 import ExampleDisplay from './ExampleDisplay.vue'
@@ -8,13 +9,18 @@ type TagResponse = {
     tags: Array<string>
 }
 
-import { onMounted, ref } from 'vue'
+export type QueryExample = {
+    imagePath: string, 
+    searchTags: string[],
+    searchString: string,
+    artist: string
+};
 
-const TOTAL_COLORS = 5
-// const selectedTags   = ref<Array<string>>([])
-// const unselectedTags = ref<Array<string>>()
+const TOTAL_COLORS   = 5
 const selectedTags   = ref<Map<string, number>>(new Map<string, number>())
 const unselectedTags = ref<Map<string, number>>(new Map<string, number>())
+const examples       = ref<Array<QueryExample>>([])
+const xmplFetchDone  = ref<boolean>(false)
 
 
 async function fetchTags() {
@@ -35,16 +41,19 @@ async function fetchTags() {
         tagData.tags.map((t, i) => tagColorMap.set(t, i % TOTAL_COLORS))
         unselectedTags.value = tagColorMap
     }
-    
 }
 
-// tag string does not include "#" character.
-// It is added via CSS on render (see `theme-tag` 
-// class under the `<style>` section below
-// function selectTag(tag: string, tagIndex: number) {
-//     selectedTags.value.push(tag)
-//     unselectedTags.value?.splice(tagIndex, 1)
-// }
+async function fetchExamples() {
+    const response = await fetch("/search-examples.json");
+    if (!response.ok) {
+        console.error(`HTTP error in fetching examples: ${response.status}`)
+    }
+    else {
+        examples.value = await response.json() as QueryExample[]
+        xmplFetchDone.value = true
+    }
+}
+
 
 // tag string does not include "#" character.
 // It is added via CSS on render (see `theme-tag` 
@@ -62,17 +71,14 @@ function deselectTag(tag: string, colorNumber: number) {
     selectedTags.value?.delete(tag)
 }
 
-// function deselectTag(tag: string, tagIndex: number) {
-//     selectedTags.value?.splice(tagIndex, 1)
-//     unselectedTags.value?.unshift(tag)   // prepend to array
-// }
-
+onBeforeMount(fetchExamples)
 onMounted(fetchTags)
+
 </script>
 <template>
     <PageHeader />
     <body>
-        <ExampleDisplay />
+        <ExampleDisplay v-if="xmplFetchDone" :exampleSet="examples" />
         <h1 id="main-heading">Find your next great commission!</h1>
         <form name="search">
             <div id="search-block">
@@ -87,7 +93,7 @@ onMounted(fetchTags)
                     <h2>Add some tags here:</h2>
                     <h3>or type them above, with a #</h3>
                 </div>
-                <TransitionGroup name="tag-group", tags="div">
+                <TransitionGroup name="tag-bin" id="transition-tag-bin">
                     <div 
                         v-for="[tagName, colorNumber] in selectedTags"
                         @click="deselectTag(tagName, colorNumber)" 
@@ -99,8 +105,8 @@ onMounted(fetchTags)
                 </TransitionGroup>
             </div>
             <!-- hashtag characters are added via CSS, with a `before` pesudoelement. -->
-            <div id="tag-cloud">
-                <TransitionGroup name="tag-group", tags="div">
+            <!-- the TransitionGroup component will compile to a div with id="tag-cloud" -->
+            <TransitionGroup name="tag-cloud" tag="div" id="tag-cloud">
                 <div 
                     v-for="[tagName, colorNumber] in unselectedTags"
                     @click="selectTag(tagName, colorNumber)" 
@@ -109,28 +115,40 @@ onMounted(fetchTags)
                 >
                     {{ tagName }}
                 </div>
-                </TransitionGroup>
-            </div>
+            </TransitionGroup>
         </form>
     </body>     
     <PageFooter />
 </template>
 <style lang="css" scoped>
-.tag-group-move, /* apply transition to moving elements */
-.tag-group-enter-active,
-.tag-group-leave-active {
+.tag-bin-move, /* apply transition to moving elements */
+.tag-bin-enter-active,
+.tag-bin-leave-active,
+.tag-cloud-move, 
+.tag-cloud-enter-active,
+.tag-cloud-leave-active {
   transition: all 0.5s ease;
 }
 
-.tag-group-enter-from,
-.tag-group-leave-to {
+.tag-bin-enter-from,
+.tag-bin-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.tag-cloud-enter-from,
+.tag-cloud-leave-to {
   opacity: 0;
   transform: translateY(-30px);
 }
 
 /* ensure leaving items are taken out of layout flow so that moving
    animations can be calculated correctly. */
-.tag-group-leave-active {
+.tag-bin-leave-active {
+  position: absolute;
+}
+
+.tag-cloud-leave-active {
   position: absolute;
 }
 
@@ -153,71 +171,8 @@ onMounted(fetchTags)
     }
 }
 
-@keyframes fade-in {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
-@keyframes fade-in-text {
-    from { color: #fff; }
-    to   { color: var(--body-text-color); }
-}
-
-@keyframes fade-out {
-    from { opacity: 1; }
-    to   { opacity: 0; }
-}
-
-
 h1 {
     text-align: center;
-}
-
-.example-display {
-    display: none;
-    height: 15em;
-    width: 100%;
-    background-size: cover;
-    background-position: top 30% center;
-    background-repeat: no-repeat;
-    justify-content: right;
-    align-items: end;
-    animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
-}
-
-.fade-in {
-    position: absolute;
-    animation-name: fade-in;
-}
-
-.fade-out {
-    position: absolute;
-    animation-name: fade-out;
-}
-
-
-.example-caption {
-    height: 50%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    padding: 3%;
-    background-image: linear-gradient(
-        to bottom, 
-        transparent, 
-        var(--body-background)
-    );
-}
-
-#example-search {
-    font-style: italic;
-}
-
-.example-search, .example-artist {
-    height: fit-content;
-    width: 100%;
 }
 
 #search-block {
@@ -268,13 +223,13 @@ input {
     font-size: larger;
     padding-left: 10px;
 }
-#tag-cloud, #tag-bin {
+#tag-cloud, #tag-bin, #transition-tag-bin {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
 }
 
-/* animate fade-in to accoutn for load times */
+
 #tag-cloud {
     margin: 7%;
     padding-bottom: 12vw;
