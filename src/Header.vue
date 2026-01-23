@@ -37,7 +37,9 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+    height: 5em;
     border-bottom: 1px solid var(--body-text-color);
 }
 
