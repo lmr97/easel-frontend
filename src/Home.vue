@@ -3,6 +3,7 @@ import { onBeforeMount, onMounted, ref } from 'vue'
 import PageHeader from './Header.vue'
 import PageFooter from './Footer.vue'
 import ExampleDisplay from './ExampleDisplay.vue'
+import TagBin from './TagBin.vue'
 
 type TagResponse = {
     accessed: Date,
@@ -17,8 +18,7 @@ export type QueryExample = {
 };
 
 const TOTAL_COLORS   = 5
-const selectedTags   = ref<Map<string, number>>(new Map<string, number>())
-const unselectedTags = ref<Map<string, number>>(new Map<string, number>())
+const tagState       = ref<Map<string, [boolean, number]>>(new Map())
 const examples       = ref<Array<QueryExample>>([])
 const xmplFetchDone  = ref<boolean>(false)
 
@@ -32,14 +32,14 @@ async function fetchTags() {
         const tagData = await response.json() as TagResponse
 
         // I'm using a map of key-value pairs here, where the key is the tag, 
-        // and the value is the color number to retain a persistent color 
+        // and the value is an array of a selection boolean and the color number, and to retain a persistent color 
         // state across tag selection and deselection. The color number is 
         // appended to the string "theme-tag-color" in order to set the 
         // background and text color. Definitely open to a more intuitive, 
         // Vue-idiomatic way of doing this. 
-        var tagColorMap = new Map<string, number>()
-        tagData.tags.map((t, i) => tagColorMap.set(t, i % TOTAL_COLORS))
-        unselectedTags.value = tagColorMap
+        var tagColorMap = new Map<string, [boolean, number]>()
+        tagData.tags.map((t, i) => tagColorMap.set(t, [false, i % TOTAL_COLORS]))
+        tagState.value = tagColorMap
     }
 }
 
@@ -59,17 +59,10 @@ async function fetchExamples() {
 // It is added via CSS on render (see `theme-tag` 
 // class under the `<style>` section below
 function selectTag(tag: string, colorNumber: number) {
-    selectedTags.value?.set(tag, colorNumber)
-    unselectedTags.value?.delete(tag)
+    tagState.value?.set(tag, [true, colorNumber])
 }
 
-function deselectTag(tag: string, colorNumber: number) {
-    // prepend new data to `Map` (which is ordered, as of ES6)
-    const prependedTag   = new Map<string, number>([[tag, colorNumber]])
-    unselectedTags.value = new Map<string, number>([...prependedTag, ...unselectedTags.value])
 
-    selectedTags.value?.delete(tag)
-}
 
 onBeforeMount(fetchExamples)
 onMounted(fetchTags)
@@ -87,28 +80,13 @@ onMounted(fetchTags)
                 </div>
                 <input type="submit" id="artist-search-button" value="Find artists">
             </div>
-            <div id="tag-bin">
-                <!-- hashtags are added via CSS, with a `before` pesudoelement. -->
-                <div class="tag-bin-label">
-                    <h2>Add some tags here:</h2>
-                    <h3>or type them above, with a #</h3>
-                </div>
-                <TransitionGroup name="tag-bin" id="transition-tag-bin">
-                    <div 
-                        v-for="[tagName, colorNumber] in selectedTags"
-                        @click="deselectTag(tagName, colorNumber)" 
-                        :key="tagName"
-                        :class="`theme-tag theme-tag-color${colorNumber}`"
-                    >
-                        {{ tagName }}
-                    </div>
-                </TransitionGroup>
-            </div>
+            <TagBin :tag-state="tagState" />
             <!-- hashtag characters are added via CSS, with a `before` pesudoelement. -->
             <!-- the TransitionGroup component will compile to a div with id="tag-cloud" -->
             <TransitionGroup name="tag-cloud" tag="div" id="tag-cloud">
                 <div 
-                    v-for="[tagName, colorNumber] in unselectedTags"
+                    v-for="[tagName, [selected, colorNumber]] in tagState" 
+                    v-show="!selected"
                     @click="selectTag(tagName, colorNumber)" 
                     :key="tagName"
                     :class="`theme-tag theme-tag-color${colorNumber}`"
@@ -120,32 +98,18 @@ onMounted(fetchTags)
     </body>     
     <PageFooter />
 </template>
-<style lang="css" scoped>
-.tag-bin-move, /* apply transition to moving elements */
-.tag-bin-enter-active,
-.tag-bin-leave-active,
+<style lang="css">
+
 .tag-cloud-move, 
 .tag-cloud-enter-active,
 .tag-cloud-leave-active {
   transition: all 0.5s ease;
 }
 
-.tag-bin-enter-from,
-.tag-bin-leave-to {
-  opacity: 0;
-  transform: translateY(30px);
-}
-
 .tag-cloud-enter-from,
 .tag-cloud-leave-to {
   opacity: 0;
   transform: translateY(-30px);
-}
-
-/* ensure leaving items are taken out of layout flow so that moving
-   animations can be calculated correctly. */
-.tag-bin-leave-active {
-  position: absolute;
 }
 
 .tag-cloud-leave-active {
@@ -207,12 +171,6 @@ h1 {
     animation-iteration-count: infinite;
 }
 
-#tag-bin {
-    margin: 5%;
-    padding: 2%;
-    border: 1px solid grey;
-    border-radius: 15px;
-}
 
 input {
     border: none;
@@ -223,14 +181,11 @@ input {
     font-size: larger;
     padding-left: 10px;
 }
-#tag-cloud, #tag-bin, #transition-tag-bin {
+
+#tag-cloud {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-}
-
-
-#tag-cloud {
     margin: 7%;
     padding-bottom: 12vw;
     height: 40vw;
@@ -253,13 +208,6 @@ input {
         transparent, 
         var(--body-background)
     );
-}
-
-#tag-bin {
-    margin: 5%;
-    padding: 2%;
-    border: 1px solid grey;
-    border-radius: 15px;
 }
 
 .theme-tag {
