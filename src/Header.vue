@@ -121,4 +121,25 @@ header a {
 #hamburger {
     height: 40px;
 }
+
+@media screen and (min-width: 600px) {
+
+    #desktop-nav {
+        display: flex;
+    }
+
+    #hamburger {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    nav {
+        display: flex;
+    }
+
+    #hamburger {
+        display: none;
+    }
+}
 </style>
