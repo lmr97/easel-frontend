@@ -4,6 +4,7 @@ import PageHeader from './Header.vue'
 import PageFooter from './Footer.vue'
 import ExampleDisplay from './ExampleDisplay.vue'
 import TagBin from './TagBin.vue'
+import TagCloud from './TagCloud.vue'
 
 type TagResponse = {
     accessed: Date,
@@ -54,16 +55,6 @@ async function fetchExamples() {
     }
 }
 
-
-// tag string does not include "#" character.
-// It is added via CSS on render (see `theme-tag` 
-// class under the `<style>` section below
-function selectTag(tag: string, colorNumber: number) {
-    tagState.value?.set(tag, [true, colorNumber])
-}
-
-
-
 onBeforeMount(fetchExamples)
 onMounted(fetchTags)
 
@@ -80,41 +71,13 @@ onMounted(fetchTags)
                 </div>
                 <input type="submit" id="artist-search-button" value="Find artists">
             </div>
-            <TagBin :tag-state="tagState" />
-            <!-- hashtag characters are added via CSS, with a `before` pesudoelement. -->
-            <!-- the TransitionGroup component will compile to a div with id="tag-cloud" -->
-            <TransitionGroup name="tag-cloud" tag="div" id="tag-cloud">
-                <div 
-                    v-for="[tagName, [selected, colorNumber]] in tagState" 
-                    v-show="!selected"
-                    @click="selectTag(tagName, colorNumber)" 
-                    :key="tagName"
-                    :class="`theme-tag theme-tag-color${colorNumber}`"
-                >
-                    {{ tagName }}
-                </div>
-            </TransitionGroup>
+            <TagBin   :tag-state="tagState" />
+            <TagCloud :tag-state="tagState" />
         </form>
     </body>     
     <PageFooter />
 </template>
 <style lang="css">
-
-.tag-cloud-move, 
-.tag-cloud-enter-active,
-.tag-cloud-leave-active {
-  transition: all 0.5s ease;
-}
-
-.tag-cloud-enter-from,
-.tag-cloud-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-}
-
-.tag-cloud-leave-active {
-  position: absolute;
-}
 
 /* using this "variable" to animate on smoothly */
 @property --rotation {
@@ -180,34 +143,6 @@ input {
     height: 100%;
     font-size: larger;
     padding-left: 10px;
-}
-
-#tag-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin: 7%;
-    padding-bottom: 12vw;
-    height: 40vw;
-    overflow: scroll;
-    mask-image: linear-gradient(
-        to top, 
-        transparent, 
-        var(--body-background) 40%
-    );
-    mask-repeat: no-repeat;
-    mask-size: 100% 100%;
-}
-
-.gradient-bottom {
-    position: absolute;
-    height: 10vw;
-    width: 100px;
-    background-image: linear-gradient(
-        to bottom, 
-        transparent, 
-        var(--body-background)
-    );
 }
 
 .theme-tag {
