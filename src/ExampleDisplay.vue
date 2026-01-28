@@ -2,23 +2,17 @@
 import { ref, computed } from 'vue'
 import { type QueryExample } from './Home.vue'
 
-const props       = defineProps<{ exampleSet: QueryExample[] }>()
-const currIdx     = ref<number>(0)
-const currExample = computed<QueryExample>(() => props.exampleSet[currIdx.value] as QueryExample)
+const props       = defineProps<{ exampleSet: QueryExample[], currIdx: number}>()
+const currExample = computed<QueryExample>(
+    () => props.exampleSet[props.currIdx] as QueryExample
+)
 
 function formatExampleSearch(tags: string[], searchString: string) {
     const tagFmt = "#" + tags.join(" #")
     return tagFmt + " " + searchString
 }
 
-// does not update the currIdx value, it just 
-// returns the new wrapped increment of it
-function wrappedIdxIncrement() {
-    const nextIndex = (currIdx.value + 1) % props.exampleSet.length
-    return nextIndex
-}
 
-window.setInterval(() => currIdx.value = wrappedIdxIncrement(), 2000)
 </script>
 <template>
 <!-- transitions by changing the `key` prop passed to the div in the Transition -->
