@@ -18,10 +18,12 @@ export type QueryExample = {
     artist: string
 };
 
-const TOTAL_COLORS   = 5
-const tagState       = ref<Map<string, [boolean, number]>>(new Map())
-const examples       = ref<Array<QueryExample>>([])
-const xmplFetchDone  = ref<boolean>(false)
+const TOTAL_COLORS  = 5
+const tagState      = ref<Map<string, [boolean, number]>>(new Map())
+const examples      = ref<Array<QueryExample>>([])
+const currIdx       = ref<number>(0)
+const xmplFetchDone = ref<boolean>(false)
+const searchText    = ref<string>("");
 
 
 async function fetchTags() {
@@ -55,6 +57,16 @@ async function fetchExamples() {
     }
 }
 
+// function processs
+
+// does not update the currIdx value, it just 
+// returns the new wrapped increment of it
+function wrappedIdxIncrement() {
+    const nextIndex = (currIdx.value + 1) % examples.value.length
+    return nextIndex
+}
+window.setInterval(() => currIdx.value = wrappedIdxIncrement(), 2000)
+
 onBeforeMount(fetchExamples)
 onMounted(fetchTags)
 
@@ -62,12 +74,17 @@ onMounted(fetchTags)
 <template>
     <PageHeader />
     <body>
-        <ExampleDisplay v-if="xmplFetchDone" :exampleSet="examples" />
+        <ExampleDisplay v-if="xmplFetchDone" :curr-idx=currIdx :exampleSet="examples" />
         <h1 id="main-heading">Find your next great commission!</h1>
         <form name="search">
             <div id="search-block">
                 <div class="rainbow-border-mat">
-                    <input name="searchText" id="search-box" placeholder="#mech #dragon bionicle" type="search">
+                    <input 
+                        id="search-box" 
+                        v-model="searchText"
+                        name="searchText" 
+                        placeholder="change me!"
+                        type="search">
                 </div>
                 <input type="submit" id="artist-search-button" value="Find artists">
             </div>
