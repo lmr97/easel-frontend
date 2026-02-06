@@ -1,13 +1,7 @@
 <script lang="ts" setup>
 
-const props = defineProps<{tagState: Map<string, [boolean, number]>}>()
-
-// tag string does not include "#" character.
-// It is added via CSS on render (see `theme-tag` 
-// class under the `<style>` section below
-function selectTag(tag: string, colorNumber: number) {
-    props.tagState.set(tag, [true, colorNumber])
-}
+import { type TagDisplaySettings } from './types';
+const props = defineProps<{tagState: Map<string, TagDisplaySettings>}>()
 
 </script>
 <template>
@@ -15,11 +9,11 @@ function selectTag(tag: string, colorNumber: number) {
 <!-- the TransitionGroup component will compile to a div with id="tag-cloud" -->
 <TransitionGroup name="tag-cloud" tag="div" id="tag-cloud">
     <div 
-        v-for="[tagName, [selected, colorNumber]] in tagState" 
-        v-show="!selected"
-        @click="selectTag(tagName, colorNumber)" 
+        v-for="[tagName, dispOpts] in tagState" 
+        v-show="!dispOpts.selected"
+        @click="dispOpts.selected = !dispOpts.selected" 
         :key="tagName"
-        :class="`theme-tag theme-tag-color${colorNumber}`"
+        :class="`theme-tag theme-tag-color${dispOpts.colorNumber}`"
     >
         {{ tagName }}
     </div>

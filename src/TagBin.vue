@@ -1,9 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{tagState: Map<string, [boolean, number]>}>()
 
-function deselectTag(tag: string, colorNumber: number) {
-    props.tagState.set(tag, [false, colorNumber]);
-}
+import { type TagDisplaySettings } from './types'
+const props = defineProps<{tagState: Map<string, TagDisplaySettings>}>()
 
 </script>
 <template>
@@ -16,11 +14,11 @@ function deselectTag(tag: string, colorNumber: number) {
         </div>
         <TransitionGroup name="tag-bin">
             <div 
-                v-for="[tagName, [selected, colorNumber]] in tagState"
-                v-show="selected"
-                @click="deselectTag(tagName, colorNumber)" 
+                v-for="[tagName, dispOpts] in tagState"
+                v-show="dispOpts.selected"
+                @click="dispOpts.selected = !dispOpts.selected" 
                 :key="tagName"
-                :class="`theme-tag theme-tag-color${colorNumber}`"
+                :class="`theme-tag theme-tag-color${dispOpts.colorNumber}`"
             >
                 {{ tagName }}
             </div>
