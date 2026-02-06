@@ -1,25 +1,15 @@
 <script setup lang="ts">
 import { onBeforeMount, onMounted, ref } from 'vue'
+import { type TagResponse, type TagDisplaySettings, type QueryExample } from './types'
 import PageHeader from './Header.vue'
 import PageFooter from './Footer.vue'
 import ExampleDisplay from './ExampleDisplay.vue'
 import TagBin from './TagBin.vue'
 import TagCloud from './TagCloud.vue'
 
-type TagResponse = {
-    accessed: Date,
-    tags: Array<string>
-}
-
-export type QueryExample = {
-    imagePath: string, 
-    searchTags: string[],
-    searchString: string,
-    artist: string
-};
 
 const TOTAL_COLORS  = 5
-const tagState      = ref<Map<string, [boolean, number]>>(new Map())
+const tagState      = ref<Map<string, TagDisplaySettings>>(new Map())
 const examples      = ref<Array<QueryExample>>([])
 const currIdx       = ref<number>(0)
 const xmplFetchDone = ref<boolean>(false)
@@ -35,13 +25,17 @@ async function fetchTags() {
         const tagData = await response.json() as TagResponse
 
         // I'm using a map of key-value pairs here, where the key is the tag, 
-        // and the value is an array of a selection boolean and the color number, and to retain a persistent color 
-        // state across tag selection and deselection. The color number is 
-        // appended to the string "theme-tag-color" in order to set the 
-        // background and text color. Definitely open to a more intuitive, 
-        // Vue-idiomatic way of doing this. 
-        var tagColorMap = new Map<string, [boolean, number]>()
-        tagData.tags.map((t, i) => tagColorMap.set(t, [false, i % TOTAL_COLORS]))
+        // and the value is an array of a selection boolean and the color number, 
+        // and to retain a persistent color state across tag selection and 
+        // deselection. The color number is appended to the string "theme-tag-color" 
+        // in order to set the background and text color. 
+        // Definitely open to a more intuitive, Vue-idiomatic way of doing this. 
+        var tagColorMap = new Map<string, TagDisplaySettings>()
+        tagData.tags.map(
+            (t, i) => tagColorMap.set(
+                t, {selected: false, colorNumber: i % TOTAL_COLORS}
+            )
+        )
         tagState.value = tagColorMap
     }
 }
@@ -65,6 +59,7 @@ function wrappedIdxIncrement() {
     const nextIndex = (currIdx.value + 1) % examples.value.length
     return nextIndex
 }
+
 window.setInterval(() => currIdx.value = wrappedIdxIncrement(), 2000)
 
 onBeforeMount(fetchExamples)
